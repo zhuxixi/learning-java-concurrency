@@ -1,5 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao;
 
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.exception.DatasourceBusyException;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.po.LoginLogPO;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -43,11 +44,15 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
     public boolean log(LoginLogPO po) {
         ArrayBlockingQueue<LoginLogPO> currentDatasource = getDatasource();
         try {
-            currentDatasource.offer(po,8, TimeUnit.SECONDS);
+            boolean success = currentDatasource.offer(po,3, TimeUnit.SECONDS);
+            if (!success){
+                throw new DatasourceBusyException("主数据源繁忙，即将切换备用数据源!");
+            }
         }catch (InterruptedException e){
-
+            e.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
