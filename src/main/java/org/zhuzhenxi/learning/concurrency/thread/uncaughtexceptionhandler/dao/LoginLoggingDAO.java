@@ -20,4 +20,10 @@ public interface LoginLoggingDAO {
      * @return
      */
     void logFailed();
+
+    /**
+     * 获取备用数据源中的日志数据量
+     * @return
+     */
+    int getBackupDatasourceSize();
 }

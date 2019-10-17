@@ -23,8 +23,4 @@ public class LoginLoggerThread extends Thread {
     public Runnable getTask() {
         return task;
     }
-
-    public void setTask(Runnable task) {
-        this.task = task;
-    }
 }

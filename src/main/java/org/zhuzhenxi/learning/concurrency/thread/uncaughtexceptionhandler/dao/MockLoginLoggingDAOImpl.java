@@ -63,6 +63,7 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
         if (currentFailedCount>=10){
             //就启用备用数据源
             USE_BACKUP.compareAndSet(false,true);
+            System.out.println("主数据源繁忙，已切换数据源为备数据源，当前记录失败次数="+currentFailedCount);
         }
     }
 
@@ -81,5 +82,10 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
             return BACKUP_DATASOURCE;
         }
         return MAIN_DATASOURCE;
+    }
+
+    @Override
+    public int getBackupDatasourceSize() {
+        return BACKUP_DATASOURCE.size();
     }
 }
