@@ -1,4 +1,4 @@
-package org.zhuzhenxi.learning.concurrency.thread;
+package org.zhuzhenxi.learning.concurrency.thread.state;
 
 /**
  *
