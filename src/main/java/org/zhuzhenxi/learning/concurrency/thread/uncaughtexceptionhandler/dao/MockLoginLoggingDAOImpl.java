@@ -25,6 +25,7 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
      * 类初始化时直接将MAIN_DATASOURCE塞满，这样线程再插入数据时就会抛出异常
      */
     static {
+        System.out.println("第三步：将主数据源塞满，模拟主数据源连接池资源不足");
         for (int i = 0; i < 5; i++) {
             MAIN_DATASOURCE.offer(new LoginLogPO(i,"用户"+i,"2019-10-1"+i));
         }
@@ -48,7 +49,7 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
             if (!success){
                 throw new DatasourceBusyException("主数据源繁忙，即将切换备用数据源!");
             }
-            System.out.println("入库成功，入库成功的数据源为,currentDatasource="+(currentDatasource==BACKUP_DATASOURCE?"BACKUP_DATASOURCE":"MAIN_DATASOURCE"));
+            System.out.println("第五步：入库成功，入库成功的数据源为,currentDatasource="+(currentDatasource==BACKUP_DATASOURCE?"BACKUP_DATASOURCE":"MAIN_DATASOURCE"));
         }catch (InterruptedException e){
             e.printStackTrace();
             return false;
@@ -64,7 +65,7 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
         if (currentFailedCount>=10&&!USE_BACKUP.get()){
             //就启用备用数据源
             USE_BACKUP.compareAndSet(false,true);
-            System.out.println("主数据源繁忙，已切换数据源为备数据源，当前记录失败次数="+currentFailedCount+"，备用数据源标志位="+USE_BACKUP.get());
+            System.out.println("主数据源繁忙，已切换数据源为备数据源，当前记录失败次数="+currentFailedCount+"，备用数据源标志位="+USE_BACKUP.get()+"，将使用备用数据源");
         }
     }
 

@@ -16,6 +16,6 @@ public class UncaughtExceptionHandlerExample {
         }catch (InterruptedException e){
             e.printStackTrace();
         }
-        System.out.println("所有任务执行完毕，备用数据源有"+LoginLogBeanFactory.getInstance().getBackupDatasourceSize()+"条数据");
+        System.out.println("第六步：所有任务执行完毕，备用数据源有"+LoginLogBeanFactory.getInstance().getBackupDatasourceSize()+"条数据");
     }
 }

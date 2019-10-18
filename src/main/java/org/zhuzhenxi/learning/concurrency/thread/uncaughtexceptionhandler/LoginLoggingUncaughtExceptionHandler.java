@@ -19,7 +19,7 @@ public class LoginLoggingUncaughtExceptionHandler implements Thread.UncaughtExce
             dao.logFailed();
             LoginLoggerThread thread = (LoginLoggerThread)t;
             Runnable task = thread.getTask();
-            System.out.println("数据源繁忙，任务重新丢回任务队列,task="+task.toString());
+            System.out.println("第四步：线程执行异常，进入UncaughtExceptionHandler，任务重新丢回任务队列,task="+task.toString());
             AsynLogger.log(task);
         }
     }
