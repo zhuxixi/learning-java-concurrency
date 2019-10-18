@@ -48,6 +48,7 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
             if (!success){
                 throw new DatasourceBusyException("主数据源繁忙，即将切换备用数据源!");
             }
+            System.out.println("入库成功，入库成功的数据源为,currentDatasource="+(currentDatasource==BACKUP_DATASOURCE?"BACKUP_DATASOURCE":"MAIN_DATASOURCE"));
         }catch (InterruptedException e){
             e.printStackTrace();
             return false;
@@ -60,10 +61,10 @@ public class MockLoginLoggingDAOImpl implements LoginLoggingDAO {
         //记录日志的失败次数+1
         int currentFailedCount = FAILED_COUNTER.incrementAndGet();
         //如果已经失败10次了,说明现在主数据源状态不是很理想啊
-        if (currentFailedCount>=10){
+        if (currentFailedCount>=10&&!USE_BACKUP.get()){
             //就启用备用数据源
             USE_BACKUP.compareAndSet(false,true);
-            System.out.println("主数据源繁忙，已切换数据源为备数据源，当前记录失败次数="+currentFailedCount);
+            System.out.println("主数据源繁忙，已切换数据源为备数据源，当前记录失败次数="+currentFailedCount+"，备用数据源标志位="+USE_BACKUP.get());
         }
     }
 

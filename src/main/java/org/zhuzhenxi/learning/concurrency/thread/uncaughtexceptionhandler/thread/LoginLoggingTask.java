@@ -22,4 +22,10 @@ public class LoginLoggingTask implements Runnable {
         dao.log(po);
     }
 
+    @Override
+    public String toString() {
+        return "LoginLoggingTask{" +
+                "po=" + po +
+                '}';
+    }
 }

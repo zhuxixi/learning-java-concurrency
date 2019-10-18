@@ -11,5 +11,11 @@ public class UncaughtExceptionHandlerExample {
 
     public static void main(String[] args){
         AsynLogger.startLogging();
+        try {
+            Thread.sleep(10000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("所有任务执行完毕，备用数据源有"+LoginLogBeanFactory.getInstance().getBackupDatasourceSize()+"条数据");
     }
 }
