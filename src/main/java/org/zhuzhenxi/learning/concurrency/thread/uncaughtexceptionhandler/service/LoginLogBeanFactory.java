@@ -1,4 +1,4 @@
-package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler;
+package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service;
 
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.LoginLoggingDAO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.MockLoginLoggingDAOImpl;

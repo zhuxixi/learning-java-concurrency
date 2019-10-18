@@ -1,6 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service;
 
-import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.LoginLoggingUncaughtExceptionHandler;
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread.LoginLoggingUncaughtExceptionHandler;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.po.LoginLogPO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread.LoginLoggerThread;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread.LoginLoggingTask;
@@ -13,6 +13,9 @@ import java.util.concurrent.ArrayBlockingQueue;
  * @date 2019.10.17
  */
 public class AsynLogger {
+    /**
+     * 日志缓冲队列，当用户登录成功时，通过调用AsynLogger.log将日志放入缓冲队列
+     */
     private static final ArrayBlockingQueue<Runnable> TASKS = new ArrayBlockingQueue<>(50);
 
     /**
@@ -28,6 +31,9 @@ public class AsynLogger {
         TASKS.offer(loggingTask);
     }
 
+    /**
+     * 调用startLogging方法
+     */
     public static void startLogging(){
         Thread a = new Thread(()->{
         while (true){

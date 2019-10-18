@@ -1,9 +1,9 @@
-package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler;
+package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread;
 
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.LoginLogBeanFactory;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.LoginLoggingDAO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.exception.DatasourceBusyException;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.AsynLogger;
-import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread.LoginLoggerThread;
 
 /**
  * 一个自定义的线程任务异常处理器

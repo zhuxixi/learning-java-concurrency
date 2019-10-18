@@ -1,6 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread;
 
-import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.LoginLogBeanFactory;
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.LoginLogBeanFactory;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.LoginLoggingDAO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.po.LoginLogPO;
 
