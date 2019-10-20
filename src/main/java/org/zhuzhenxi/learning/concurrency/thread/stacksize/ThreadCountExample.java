@@ -9,8 +9,9 @@ public class ThreadCountExample {
     public static void main(String[] args){
         int i = 0;
         while (true){
+            i++;
             System.out.println(i);
-            Thread thread = new StackSizeExampleThread(null,new WaitTask(),i+"",20);
+            Thread thread = new StackSizeExampleThread(null,new WaitTask(),i+"",1000*1000*1000);
             thread.start();
         }
     }
