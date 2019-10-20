@@ -7,11 +7,22 @@ package org.zhuzhenxi.learning.concurrency.thread.stacksize;
  */
 public class ThreadCountExample {
     public static void main(String[] args){
+        int[] stackSizeArr = new int[args.length];
+        long stackSize = 1;
+        for (int i = 0; i < args.length; i++) {
+            stackSizeArr[i] = Integer.parseInt(args[i]);
+            stackSize *= stackSizeArr[i];
+        }
+
+        if (stackSizeArr.length==0){
+            stackSize = 1000*1000*1000;
+        }
+
         int i = 0;
         while (true){
             i++;
             System.out.println(i);
-            Thread thread = new StackSizeExampleThread(null,new WaitTask(),i+"",1000*1000*1000);
+            Thread thread = new StackSizeExampleThread(null,new WaitTask(),i+"",stackSize);
             thread.start();
         }
     }
