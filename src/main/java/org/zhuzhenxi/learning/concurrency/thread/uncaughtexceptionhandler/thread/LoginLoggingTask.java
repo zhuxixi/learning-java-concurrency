@@ -1,6 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread;
 
-import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.LoginLogBeanFactory;
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.LoginLogBeanFactory;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.LoginLoggingDAO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.po.LoginLogPO;
 
@@ -22,4 +22,10 @@ public class LoginLoggingTask implements Runnable {
         dao.log(po);
     }
 
+    @Override
+    public String toString() {
+        return "LoginLoggingTask{" +
+                "po=" + po +
+                '}';
+    }
 }

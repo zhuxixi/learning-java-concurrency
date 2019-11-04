@@ -1,9 +1,9 @@
-package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler;
+package org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread;
 
+import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.LoginLogBeanFactory;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.dao.LoginLoggingDAO;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.exception.DatasourceBusyException;
 import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.service.AsynLogger;
-import org.zhuzhenxi.learning.concurrency.thread.uncaughtexceptionhandler.thread.LoginLoggerThread;
 
 /**
  * 一个自定义的线程任务异常处理器
@@ -19,6 +19,7 @@ public class LoginLoggingUncaughtExceptionHandler implements Thread.UncaughtExce
             dao.logFailed();
             LoginLoggerThread thread = (LoginLoggerThread)t;
             Runnable task = thread.getTask();
+            System.out.println("第四步：线程执行异常，进入UncaughtExceptionHandler，任务重新丢回任务队列,task="+task.toString());
             AsynLogger.log(task);
         }
     }
