@@ -1,4 +1,4 @@
-package org.zhuzhenxi.learning.concurrency.future.futuretask;
+package org.zhuzhenxi.learning.concurrency.future.futuretask.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
