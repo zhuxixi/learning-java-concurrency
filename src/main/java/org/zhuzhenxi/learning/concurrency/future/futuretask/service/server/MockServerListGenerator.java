@@ -1,11 +1,13 @@
-package org.zhuzhenxi.learning.concurrency.future.futuretask.util;
+package org.zhuzhenxi.learning.concurrency.future.futuretask.service.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.util.DateUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 服务器列表生成器
@@ -13,6 +15,8 @@ import java.util.*;
  * 一个比较常用的方案是基于zookeeper的watcher机制，每个微服务节点去zookeeper
  * 创建一个临时节点，并保持心跳，如果服务挂了，3秒左右临时节点会被zookeeper移除。
  * 一个微服务集群中一般都会有一类管控节点，去监听这些临时节点，如果节点被移除，说明某个节点down了
+ * 但是监听不是可靠的，可能会因为一些原因例如网络原因或资源不足导致事件发生了但是监听没有生效
+ * 这个是时候我们还需要心跳线程去主动拉取服务器列表
  *
  * 这个类用于模拟服务器列表的生成，为了简化处理，我们使用一个String url = 110.119.120.178:6078表示一个节点
  * @author zhuzh
@@ -24,14 +28,13 @@ public class MockServerListGenerator {
      */
     private static final List<String> CURRENT_SERVER_LIST = new ArrayList<>(28);
 
-
-
     /**
-     * 读取的服务列表，放入历史MAP中，每次读取和当前CURRENT_SERVER_LIST作比较判断服务IP是否有变化
-     * 如果有变化，说明集群中某个节点挂了
+     * 读取的服务列表，放入历史MAP中
      */
     private static final Map<String, ServerSnapShot> SERVER_HISTORY= new LinkedHashMap<>();
     private static final Random RANDOM = new Random();
+
+    private static final AtomicInteger HEART_BEAT_COUNTER = new AtomicInteger();
 
     /**
      * 先初始化一组服务列表
@@ -41,9 +44,12 @@ public class MockServerListGenerator {
         recordHistory();
     }
 
+    /**
+     * 每次读取后将服务器列表存入历史记录
+     */
     private static void recordHistory() {
         if (!CURRENT_SERVER_LIST.isEmpty()){
-            String time = getCurrentTime();
+            String time = DateUtil.getCurrentTime();
             ServerSnapShot serverSnapShot  = new ServerSnapShot(CURRENT_SERVER_LIST,time);
             SERVER_HISTORY.put(time,serverSnapShot);
         }
@@ -52,13 +58,10 @@ public class MockServerListGenerator {
 
 
     /**
-     * 获取服务器列表
-     * 如果随机数命中，那么就模拟down掉的情况，重新生成一组server
-     *
+     * 获取当前的服务器列表
      */
     public static List<String> loadServerList(){
-
-        return null;
+        return CURRENT_SERVER_LIST;
     }
 
     /**
@@ -102,10 +105,6 @@ public class MockServerListGenerator {
     }
 
 
-    public static void main(String[] args){
-        heartBeat();
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -121,17 +120,19 @@ public class MockServerListGenerator {
         for (;;){
             /**
              * 检查随机数是否命中
+             * 如果命中，重新生成一组ip，模拟集群重启的情况
+             * 重启的原因有很多，可能是大半夜升级
              */
-            boolean nodeDown = RANDOM.nextInt(6) ==5;
-            if (nodeDown){
-                System.out.println("服务列表Watcher:节点列表发生变化，可能某个节点挂了");
+            boolean nodeAllReboot = RANDOM.nextInt(6) ==5;
+            if (nodeAllReboot){
+                System.out.println(HEART_BEAT_COUNTER.incrementAndGet()+".服务列表Watcher:节点列表发生变化，可能集群重启了");
                 initialMockServerList();
             }else {
-                System.out.println("服务列表Watcher:节点列表无变化，一切正常");
+                System.out.println(HEART_BEAT_COUNTER.incrementAndGet()+".服务列表Watcher:节点列表无变化，一切正常");
             }
             recordHistory();
             try {
-                Thread.sleep(2750);
+                Thread.sleep(2950);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -139,10 +140,4 @@ public class MockServerListGenerator {
 
     }
 
-
-    public static String getCurrentTime(){
-        Date currentTime = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(currentTime);
-    }
 }

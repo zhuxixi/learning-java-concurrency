@@ -1,4 +1,4 @@
-package org.zhuzhenxi.learning.concurrency.future.futuretask;
+package org.zhuzhenxi.learning.concurrency.future.futuretask.callable;
 
 import java.util.concurrent.Callable;
 

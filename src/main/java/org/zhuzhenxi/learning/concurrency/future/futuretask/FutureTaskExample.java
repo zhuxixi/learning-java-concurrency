@@ -1,20 +1,29 @@
 package org.zhuzhenxi.learning.concurrency.future.futuretask;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.ServerHeartBeatTask;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+
+/**
+ * @author zhuzhenxi
+ * @date 2019.11.09
+ */
 public class FutureTaskExample {
+
+    /**
+     * 线程同步器
+     */
+    private static final CountDownLatch LATCH = new CountDownLatch(1);
+
     public static void main(String[] args){
-        CallableChecker<String> checker = new CallableChecker<>();
-        FutureTask<String> test = new FutureTask<String>(checker);
-        try {
-            Thread a = new Thread(test);
-            a.start();
-            Thread.sleep(1000);
-            while (test.isDone()){
-                System.out.println(test.get());
-            }
-        }catch (ExecutionException|InterruptedException e){
+        Thread serverWatcher = new Thread(new ServerHeartBeatTask(LATCH));
+        serverWatcher.setDaemon(true);
+        serverWatcher.start();
+        try{
+            LATCH.await(30, TimeUnit.SECONDS);
+        }catch (InterruptedException e){
             e.printStackTrace();
         }
     }
