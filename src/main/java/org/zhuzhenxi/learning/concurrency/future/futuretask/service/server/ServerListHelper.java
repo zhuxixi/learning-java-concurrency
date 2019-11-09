@@ -1,12 +1,16 @@
 package org.zhuzhenxi.learning.concurrency.future.futuretask.service.server;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.cache.SimpleLruCache;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.entity.ServerSnapShot;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.event.BaseHeartBeatEvent;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.event.HeartBeatEventFactory;
 import org.zhuzhenxi.learning.concurrency.future.futuretask.util.DateUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,19 +26,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author zhuzh
  * @date 2019.11.08
  */
-public class MockServerListGenerator {
+public class ServerListHelper {
     /**
      * 模拟的服务器列表，当前最新读取的服务列表
      */
-    private static final List<String> CURRENT_SERVER_LIST = new ArrayList<>(28);
+    private static final List<String> CURRENT_SERVER_LIST = new CopyOnWriteArrayList<>();
 
     /**
      * 读取的服务列表，放入历史MAP中
      */
-    private static final Map<String, ServerSnapShot> SERVER_HISTORY= new LinkedHashMap<>();
+    private static final Map<String, ServerSnapShot> SERVER_HISTORY= new SimpleLruCache<>(6);
     private static final Random RANDOM = new Random();
 
+    /**
+     * 心跳次数计数器
+     */
     private static final AtomicInteger HEART_BEAT_COUNTER = new AtomicInteger();
+
+    private static final AtomicInteger REBOOT_COUNTER = new AtomicInteger();
 
     /**
      * 先初始化一组服务列表
@@ -47,10 +56,12 @@ public class MockServerListGenerator {
     /**
      * 每次读取后将服务器列表存入历史记录
      */
-    private static void recordHistory() {
+    public static void recordHistory() {
         if (!CURRENT_SERVER_LIST.isEmpty()){
             String time = DateUtil.getCurrentTime();
-            ServerSnapShot serverSnapShot  = new ServerSnapShot(CURRENT_SERVER_LIST,time);
+            List<String> snapshot = new ArrayList<>(28);
+            snapshot.addAll(CURRENT_SERVER_LIST);
+            ServerSnapShot serverSnapShot  = new ServerSnapShot(snapshot,time,HEART_BEAT_COUNTER.get());
             SERVER_HISTORY.put(time,serverSnapShot);
         }
     }
@@ -105,32 +116,14 @@ public class MockServerListGenerator {
     }
 
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    private static class ServerSnapShot{
-        private List<String> serverList;
-        private String time;
-    }
-
     /**
      * 模拟心跳，3秒钟读取一次zk的服务列表
      */
     public static void heartBeat(){
         for (;;){
-            /**
-             * 检查随机数是否命中
-             * 如果命中，重新生成一组ip，模拟集群重启的情况
-             * 重启的原因有很多，可能是大半夜升级
-             */
-            boolean nodeAllReboot = RANDOM.nextInt(6) ==5;
-            if (nodeAllReboot){
-                System.out.println(HEART_BEAT_COUNTER.incrementAndGet()+".服务列表Watcher:节点列表发生变化，可能集群重启了");
-                initialMockServerList();
-            }else {
-                System.out.println(HEART_BEAT_COUNTER.incrementAndGet()+".服务列表Watcher:节点列表无变化，一切正常");
-            }
-            recordHistory();
+            int heartBeatCount = HEART_BEAT_COUNTER.incrementAndGet();
+            BaseHeartBeatEvent heartBeatEvent = HeartBeatEventFactory.getEvent(heartBeatCount);
+            heartBeatEvent.heartbeat();
             try {
                 Thread.sleep(2950);
             }catch (InterruptedException e){
@@ -139,5 +132,14 @@ public class MockServerListGenerator {
         }
 
     }
+
+    /**
+     * 心跳检测服务列表全部变化后记录重启次数
+     */
+    public static void recordRebootCount(){
+        REBOOT_COUNTER.incrementAndGet();
+    }
+
+
 
 }

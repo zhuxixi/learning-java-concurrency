@@ -1,6 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.future.futuretask;
 
-import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.ServerHeartBeatTask;
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.task.ServerHeartBeatTask;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
