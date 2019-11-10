@@ -1,5 +1,6 @@
 package org.zhuzhenxi.learning.concurrency.future.futuretask;
 
+import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.ServerListHelper;
 import org.zhuzhenxi.learning.concurrency.future.futuretask.service.server.task.ServerHeartBeatTask;
 
 import java.util.concurrent.CountDownLatch;
@@ -23,6 +24,7 @@ public class FutureTaskExample {
         serverWatcher.start();
         try{
             LATCH.await(30, TimeUnit.SECONDS);
+            ServerListHelper.printCache();
         }catch (InterruptedException e){
             e.printStackTrace();
         }

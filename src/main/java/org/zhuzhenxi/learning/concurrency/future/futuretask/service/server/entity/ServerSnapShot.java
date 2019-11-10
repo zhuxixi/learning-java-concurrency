@@ -16,4 +16,5 @@ public class ServerSnapShot {
     private List<String> serverList;
     private String time;
     private int heartBeatCount;
+    private int rebootCount;
 }

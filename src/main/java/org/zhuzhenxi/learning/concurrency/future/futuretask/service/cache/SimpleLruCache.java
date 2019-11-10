@@ -27,4 +27,5 @@ public class SimpleLruCache<K,V> extends LinkedHashMap<K,V> {
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return size()>capacity;
     }
+
 }

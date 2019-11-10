@@ -13,7 +13,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServerNodeInfo {
+public class ServerNode {
     private String url;
     private int invokeCount;
+
+
+    public void doInvoke(){
+        invokeCount+=1;
+    }
+
+    /**
+     * 查询处理次数
+     * @return
+     */
+    public int queryInvokeCount(){
+        return invokeCount;
+    }
+
 }

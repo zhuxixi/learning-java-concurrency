@@ -57,11 +57,17 @@ public class ServerListHelper {
      * 每次读取后将服务器列表存入历史记录
      */
     public static void recordHistory() {
+        //每10次心跳记录一次历史记录
+        int heartBeatCount = HEART_BEAT_COUNTER.get();
+        if (heartBeatCount%10!=0){
+            return;
+        }
+
         if (!CURRENT_SERVER_LIST.isEmpty()){
             String time = DateUtil.getCurrentTime();
             List<String> snapshot = new ArrayList<>(28);
             snapshot.addAll(CURRENT_SERVER_LIST);
-            ServerSnapShot serverSnapShot  = new ServerSnapShot(snapshot,time,HEART_BEAT_COUNTER.get());
+            ServerSnapShot serverSnapShot  = new ServerSnapShot(snapshot,time,HEART_BEAT_COUNTER.get(),REBOOT_COUNTER.get());
             SERVER_HISTORY.put(time,serverSnapShot);
         }
     }
@@ -86,12 +92,13 @@ public class ServerListHelper {
         String url = "";
 
         //28个节点
-        int count = 28;
+        int count = 6;
         /**
          * 使用随机数，因为随机数生成可能会有重复，需要一个列表保存
          * 已生成过得随机数，如果出现重复，重新生成
          */
-        List<Integer> seed = new ArrayList<>(40);
+        List<Integer> seed = new ArrayList<>(10);
+        List<String> temp = new ArrayList<>(6);
         while (count>0){
             int ipTail = 0;
             //自旋的生成随机数，直到不重复位置
@@ -111,8 +118,10 @@ public class ServerListHelper {
             }
 
             count-=1;
-            CURRENT_SERVER_LIST.add(url);
+            temp.add(url);
         }
+        CURRENT_SERVER_LIST.clear();
+        CURRENT_SERVER_LIST.addAll(temp);
     }
 
 
@@ -140,6 +149,8 @@ public class ServerListHelper {
         REBOOT_COUNTER.incrementAndGet();
     }
 
-
+    public static void printCache(){
+        System.out.println(SERVER_HISTORY);
+    }
 
 }

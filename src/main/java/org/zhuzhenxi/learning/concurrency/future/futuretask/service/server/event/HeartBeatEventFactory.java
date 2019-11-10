@@ -16,7 +16,7 @@ public class HeartBeatEventFactory {
         //掷骰子
         int seed = RANDOM.nextInt(6);
 
-        if (seed == 6){
+        if (seed == 3){
             return new HeartBeatRebootEvent(heartBeatCount);
         }else {
             return new HeartBeatNormalEvent(heartBeatCount);
